@@ -71,26 +71,23 @@ class FedAvgCNN(nn.Module):
         x = self.fc(x)
         return x
 
-
 class FedAvgMLP(nn.Module):
-    def __init__(self, in_features=3072, num_classes=10, hidden_dim=512):
+    def __init__(self, in_features=3072, num_classes=10):
         super().__init__()
-        self.fc1 = nn.Linear(in_features, hidden_dim)
-        self.fc2 = nn.Linear(hidden_dim, hidden_dim)
-        self.fc = nn.Linear(hidden_dim, num_classes)
+        self.fc1 = nn.Linear(in_features, 350)
+        self.fc2 = nn.Linear(350, 50)
+        self.fc3 = nn.Linear(50, 350)
+        self.fc = nn.Linear(350, num_classes) 
         self.act = nn.ReLU(inplace=True)
-        self.dropout = nn.Dropout(0.3)
 
     def forward(self, x):
         if x.ndim == 4:
             x = x.view(x.size(0), -1)
         x = self.act(self.fc1(x))
-
-        x = self.act(self.fc2(x))
-
+        x = self.act(self.fc2(x))    
+        x = self.act(self.fc3(x))
         x = self.fc(x)
         return x
-
 
 def U_SU4(weights_0, weights_1, weights_2, weights_3, weights_4, weights_5, weights_6,
           wires):
